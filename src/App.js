@@ -4,6 +4,8 @@ import TodoList from './components/TodoList';
 import TodoForm from './components/TodoForm';
 import PostList from './components/PostList';
 import { useEffect, useState } from 'react';
+import Pagination from './components/Pagination';
+import queryString from 'query-string';
 
 function App() {
   const [todoList, setTodoList] = useState([
@@ -13,16 +15,29 @@ function App() {
   ]);
 
   const [postList, setPortList] = useState([]);
+  const [pagination, setPagination] = useState({
+    _page: 1,
+    _limit: 10,
+    _totalRows: 1,
+  });
+  const [filters, setFileters] = useState({
+    _limit: 10,
+    _page: 1,
+  })
 
   useEffect(() => {
     async function fetchPostList() {
+      //...
       try {
-        const requestUrl = 'http://js-post-api.herokuapp.com/api/posts?_limit=10&_page=1';
+        // _limit=10&_page=1
+        const paramsString = queryString.stringify(filters);
+        const requestUrl = `http://js-post-api.herokuapp.com/api/posts?${paramsString}`;
         const response = await fetch(requestUrl);
         const responseJSON = await response.json();
 
-        const { data } = responseJSON;
+        const { data, pagination } = responseJSON;
         setPortList(data);
+        setPagination(pagination);
       } catch (error) {
         console.log('Failed to fetch post list:', error.message);
       }
@@ -30,7 +45,7 @@ function App() {
     }
 
     fetchPostList();
-  }, []);
+  }, [filters]);
 
   function handleTodoClick(todo) {
     console.log(todo);
@@ -54,6 +69,14 @@ function App() {
     setTodoList(newTodoList);
   }
 
+  function handlePageChange(newPage) {
+    console.log('new Page:',  newPage);
+    setFileters({
+      ...filters,
+      _page: newPage,
+    });
+  }
+
   return (
     <div className="app">
       <h1>React hooks - ColorBox</h1>
@@ -66,6 +89,11 @@ function App() {
 
       <h1>React hooks - PostList</h1>
       <PostList posts={postList} />
+        
+      <Pagination 
+        pagination={pagination}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }
