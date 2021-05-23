@@ -6,6 +6,7 @@ import PostList from './components/PostList';
 import { useEffect, useState } from 'react';
 import Pagination from './components/Pagination';
 import queryString from 'query-string';
+import PostFiltersForm from './components/PostFiltersForm';
 
 function App() {
   const [todoList, setTodoList] = useState([
@@ -23,6 +24,7 @@ function App() {
   const [filters, setFileters] = useState({
     _limit: 10,
     _page: 1,
+    title_like: '',
   })
 
   useEffect(() => {
@@ -77,6 +79,16 @@ function App() {
     });
   }
 
+  function handleFiltersChange(newFilters) {
+    console.log('New filters:', newFilters);
+    setFileters({
+      ...filters,
+      _page: 1,
+      title_like: newFilters.searchTerm,
+
+    })
+  }
+
   return (
     <div className="app">
       <h1>React hooks - ColorBox</h1>
@@ -88,6 +100,7 @@ function App() {
       <TodoList todos={todoList} onTodoClick={handleTodoClick} />
 
       <h1>React hooks - PostList</h1>
+      <PostFiltersForm onSubmit={handleFiltersChange} />
       <PostList posts={postList} />
         
       <Pagination 
