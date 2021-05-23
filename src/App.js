@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import Pagination from './components/Pagination';
 import queryString from 'query-string';
 import PostFiltersForm from './components/PostFiltersForm';
+import Clock from './components/CLock';
 
 function App() {
   const [todoList, setTodoList] = useState([
@@ -91,6 +92,8 @@ function App() {
 
   return (
     <div className="app">
+      <h1>React hooks - Clock</h1>
+      <Clock />
       <h1>React hooks - ColorBox</h1>
 
       <ColorBox />
